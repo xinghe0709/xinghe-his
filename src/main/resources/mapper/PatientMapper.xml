@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xinghe.xinghehis.mapper.PatientMapper">
+    <select id="findByKeyword" resultType="org.xinghe.xinghehis.entity.Patient">
+        SELECT * FROM patient
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE CONCAT('%', #{keyword}, '%')
+                OR phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" resultType="org.xinghe.xinghehis.entity.Patient">
+        SELECT * FROM patient WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO patient (name, gender, birth_date, phone, id_card, address)
+        VALUES (#{name}, #{gender}, #{birthDate}, #{phone}, #{idCard}, #{address})
+    </insert>
+
+    <update id="update">
+        UPDATE patient SET name=#{name}, gender=#{gender}, birth_date=#{birthDate},
+        phone=#{phone}, id_card=#{idCard}, address=#{address} WHERE id=#{id}
+    </update>
+</mapper>

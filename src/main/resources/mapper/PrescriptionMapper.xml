@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xinghe.xinghehis.mapper.PrescriptionMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO prescription (registration_id, doctor_id, status, remark)
+        VALUES (#{registrationId}, #{doctorId}, #{status}, #{remark})
+    </insert>
+
+    <select id="findById" resultMap="prescriptionMap">
+        SELECT pr.*, pi.id AS pi_id, pi.medicine_id, pi.dosage, pi.quantity, pi.price,
+               m.name AS medicine_name
+        FROM prescription pr
+        LEFT JOIN prescription_item pi ON pr.id = pi.prescription_id
+        LEFT JOIN medicine m ON pi.medicine_id = m.id
+        WHERE pr.id = #{id}
+    </select>
+
+    <select id="findByRegistrationId" resultMap="prescriptionMap">
+        SELECT pr.*, pi.id AS pi_id, pi.medicine_id, pi.dosage, pi.quantity, pi.price,
+               m.name AS medicine_name
+        FROM prescription pr
+        LEFT JOIN prescription_item pi ON pr.id = pi.prescription_id
+        LEFT JOIN medicine m ON pi.medicine_id = m.id
+        WHERE pr.registration_id = #{registrationId}
+    </select>
+
+    <select id="findByDoctorId" resultMap="prescriptionMap">
+        SELECT pr.*, pi.id AS pi_id, pi.medicine_id, pi.dosage, pi.quantity, pi.price,
+               m.name AS medicine_name, p.name AS patient_name
+        FROM prescription pr
+        LEFT JOIN prescription_item pi ON pr.id = pi.prescription_id
+        LEFT JOIN medicine m ON pi.medicine_id = m.id
+        LEFT JOIN registration r ON pr.registration_id = r.id
+        LEFT JOIN patient p ON r.patient_id = p.id
+        WHERE pr.doctor_id = #{doctorId}
+        ORDER BY pr.created_at DESC
+    </select>
+
+    <resultMap id="prescriptionMap" type="org.xinghe.xinghehis.entity.Prescription">
+        <id property="id" column="id"/>
+        <result property="registrationId" column="registration_id"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="patientName" column="patient_name"/>
+        <collection property="items" ofType="org.xinghe.xinghehis.entity.PrescriptionItem">
+            <id property="id" column="pi_id"/>
+            <result property="medicineId" column="medicine_id"/>
+            <result property="dosage" column="dosage"/>
+            <result property="quantity" column="quantity"/>
+            <result property="price" column="price"/>
+            <result property="medicineName" column="medicine_name"/>
+        </collection>
+    </resultMap>
+</mapper>

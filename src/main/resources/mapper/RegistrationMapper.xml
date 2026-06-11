@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xinghe.xinghehis.mapper.RegistrationMapper">
+    <select id="findByCondition" resultType="org.xinghe.xinghehis.entity.Registration">
+        SELECT r.*, p.name AS patient_name, d.name AS doctor_name, dept.name AS department_name
+        FROM registration r
+        JOIN patient p ON r.patient_id = p.id
+        JOIN doctor d ON r.doctor_id = d.id
+        JOIN department dept ON r.department_id = dept.id
+        <where>
+            <if test="status != null and status != ''">
+                AND r.status = #{status}
+            </if>
+            <if test="departmentId != null">
+                AND r.department_id = #{departmentId}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND r.register_time &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND r.register_time &lt;= #{endDate}
+            </if>
+        </where>
+        ORDER BY r.register_time DESC
+    </select>
+
+    <select id="findById" resultType="org.xinghe.xinghehis.entity.Registration">
+        SELECT r.*, p.name AS patient_name, d.name AS doctor_name, dept.name AS department_name
+        FROM registration r
+        JOIN patient p ON r.patient_id = p.id
+        JOIN doctor d ON r.doctor_id = d.id
+        JOIN department dept ON r.department_id = dept.id
+        WHERE r.id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO registration (patient_id, doctor_id, department_id, register_time, status, created_by)
+        VALUES (#{patientId}, #{doctorId}, #{departmentId}, #{registerTime}, #{status}, #{createdBy})
+    </insert>
+
+    <update id="update">
+        UPDATE registration
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="chiefComplaint != null">chief_complaint = #{chiefComplaint},</if>
+            <if test="diagnosis != null">diagnosis = #{diagnosis},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>
