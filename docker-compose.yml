@@ -1,23 +1,35 @@
+# ============================================
+# 星河HIS Docker Compose 编排文件
+# ============================================
+# 一键启动所有服务：docker-compose up -d --build
+# 停止所有服务：docker-compose down
+# 停止并清除数据卷：docker-compose down -v
+#
+# 服务依赖链：mysql/redis → backend → frontend
+# ============================================
+
 services:
+  # MySQL 8.0 主数据库
   mysql:
     image: mysql:8.0
     container_name: his-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: xinghe_his
+      MYSQL_ROOT_PASSWORD: root123    # root 密码
+      MYSQL_DATABASE: xinghe_his      # 自动创建数据库
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
+      - mysql_data:/var/lib/mysql     # 数据持久化（容器重启不丢失）
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql  # 首次启动自动执行建表脚本
+    healthcheck:                      # 健康检查：确保 MySQL 就绪后才启动 backend
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # Redis 7 缓存服务
   redis:
-    image: redis:7-alpine
+    image: redis:7-alpine             # 使用 Alpine 轻量镜像
     container_name: his-redis
     ports:
       - "6379:6379"
@@ -27,33 +39,37 @@ services:
       timeout: 5s
       retries: 5
 
+  # Spring Boot 后端服务
   backend:
     build:
-      context: .
+      context: .                      # 构建上下文为项目根目录
       dockerfile: Dockerfile
     container_name: his-backend
     ports:
       - "8080:8080"
     environment:
+      # 覆盖 application.yaml 中的数据库/Redis 连接地址
+      # Docker 内部通过服务名（mysql/redis）互相访问
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/xinghe_his?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root123
       SPRING_DATA_REDIS_HOST: redis
-    depends_on:
+    depends_on:                       # 依赖关系：等待 MySQL 和 Redis 健康检查通过
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
 
+  # Vue 3 前端服务（Nginx）
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: his-frontend
     ports:
-      - "80:80"
+      - "80:80"                       # 对外暴露 80 端口
     depends_on:
       - backend
 
 volumes:
-  mysql_data:
+  mysql_data:                         # 数据卷定义（见 mysql 服务的 volumes 配置）

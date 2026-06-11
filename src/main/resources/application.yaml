@@ -1,18 +1,28 @@
+# ============================================
+# 星河HIS 系统 — 主配置文件
+# ============================================
+# Spring 配置加载顺序：
+#   application.yaml (本文件) → application-{profile}.yaml (环境配置)
+#   环境配置中的同名属性会覆盖主配置
+# ============================================
+
 spring:
   application:
-    name: xinghe-his
+    name: xinghe-his           # 应用名称，用于日志、监控等
   profiles:
-    active: dev
+    active: dev                # 激活的环境配置，对应 application-dev.yaml
 
 server:
-  port: 8080
+  port: 8080                   # 服务端口
 
+# MyBatis 配置
 mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: org.xinghe.xinghehis.entity
+  mapper-locations: classpath:mapper/*.xml   # Mapper XML 文件位置
+  type-aliases-package: org.xinghe.xinghehis.entity  # 实体类别名，XML中可直接用类名
   configuration:
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: true       # 自动驼峰映射：real_name → realName
 
+# JWT 配置
 jwt:
-  secret: xinghe-his-jwt-secret-key-2026-must-be-at-least-256-bits-long!!
-  expiration: 86400000
+  secret: xinghe-his-jwt-secret-key-2026-must-be-at-least-256-bits-long!!  # 签名密钥（至少256位）
+  expiration: 86400000         # Token 有效期：24小时（毫秒）

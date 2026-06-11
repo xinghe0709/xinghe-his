@@ -1,3 +1,20 @@
+-- ============================================
+-- 星河HIS 数据库初始化脚本
+-- ============================================
+-- Docker 首次启动时自动执行（挂载到 /docker-entrypoint-initdb.d/）
+-- 包含：建表语句（8张表）+ 种子数据（用户/科室/医生/药品）
+--
+-- 表关系概览：
+--   user ──1:1── doctor（可选）
+--   patient ──1:N── registration
+--   department ──1:N── doctor / registration
+--   registration ──1:N── prescription
+--   prescription ──1:N── prescription_item
+--   medicine ──1:N── prescription_item
+--
+-- 密码说明：种子用户密码均为 123456 的 BCrypt 加密结果
+-- ============================================
+
 CREATE TABLE IF NOT EXISTS `user` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,

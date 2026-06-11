@@ -1,10 +1,18 @@
+# ============================================
+# 开发环境配置
+# ============================================
+# 使用方式：IDEA 中设置 VM options: -Dspring.profiles.active=dev
+# 或通过 application.yaml 中的 spring.profiles.active 自动激活
+
 spring:
   datasource:
+    # MySQL 8.0 连接配置
+    # serverTimezone=Asia/Shanghai 设置时区为东八区
     url: jdbc:mysql://localhost:3306/xinghe_his?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: root123
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver   # MySQL 8.x JDBC 驱动
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: localhost          # Redis 服务器地址
+      port: 6379               # Redis 端口
