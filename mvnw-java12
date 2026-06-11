@@ -1,0 +1,7 @@
+#!/bin/bash
+# 使用 Java 12 运行 Maven 命令（用于下载新依赖时绕过 Java 23 TLS 问题）
+# 用法: ./mvnw-java12 dependency:resolve
+# 原因: Java 23 的 TLS 协议栈与 Maven Central/Aliyun CDN 存在兼容性问题，
+#       导致 HTTPS 握手失败。Java 12 无此问题，可用于临时下载依赖。
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-12.0.1.jdk/Contents/Home
+./mvnw "$@"
