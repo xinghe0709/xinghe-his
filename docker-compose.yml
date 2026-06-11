@@ -27,5 +27,33 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: his-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/xinghe_his?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root123
+      SPRING_DATA_REDIS_HOST: redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: his-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
 volumes:
   mysql_data:
