@@ -74,6 +74,7 @@ public class RegistrationService {
     public Registration create(Registration registration) {
         patientService.getById(registration.getPatientId());  // 校验患者存在
         registration.setStatus("WAITING");
+        registration.setRegisterTime(java.time.LocalDateTime.now());
         registration.setCreatedBy(UserContext.getUserId());    // 通过 ThreadLocal 获取当前用户
         registrationMapper.insert(registration);
         return registrationMapper.findById(registration.getId());

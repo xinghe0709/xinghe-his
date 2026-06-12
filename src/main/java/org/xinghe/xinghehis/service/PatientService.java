@@ -1,5 +1,6 @@
 package org.xinghe.xinghehis.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.xinghe.xinghehis.entity.Patient;
 import org.xinghe.xinghehis.mapper.PatientMapper;
@@ -20,13 +21,12 @@ import java.util.Map;
  * 生产环境应改为数据库分页（LIMIT/OFFSET）。
  */
 @Service
+@RequiredArgsConstructor
+
 public class PatientService {
 
     private final PatientMapper patientMapper;
 
-    public PatientService(PatientMapper patientMapper) {
-        this.patientMapper = patientMapper;
-    }
 
     /** 分页查询患者列表，支持按姓名/手机号模糊搜索 */
     public Map<String, Object> page(PatientQuery query) {

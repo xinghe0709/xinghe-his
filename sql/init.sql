@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS prescription_item (
 
 -- Seed data
 INSERT INTO `user` (username, password, role, real_name) VALUES
-('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5Eh', 'REGISTRAR', '张挂号'),
-('doctor1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5Eh', 'DOCTOR', '李医生'),
-('pharmacist1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5Eh', 'PHARMACIST', '王药师');
+('admin', '$2a$12$byzJ8kVEJta1M2aINXdiqOzPZv6qUtqZkaILPnBCOr7a7w8QMgZwq', 'REGISTRAR', '张挂号'),
+('doctor1', '$2a$12$byzJ8kVEJta1M2aINXdiqOzPZv6qUtqZkaILPnBCOr7a7w8QMgZwq', 'DOCTOR', '李医生'),
+('pharmacist1', '$2a$12$byzJ8kVEJta1M2aINXdiqOzPZv6qUtqZkaILPnBCOr7a7w8QMgZwq', 'PHARMACIST', '王药师');
 
 INSERT INTO department (name, code) VALUES
 ('内科', 'NK'),
